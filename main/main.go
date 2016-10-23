@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CaLYpSEDamir/loader"
+	"github.com/CaLYpSEDamir/InfoTechGo/loader"
 )
 
 func main() {

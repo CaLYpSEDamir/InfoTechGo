@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/CaLYpSEDamir/invitro"
+	"github.com/CaLYpSEDamir/InfoTechGo/invitro"
 )
 
 var p = fmt.Println
@@ -19,12 +19,15 @@ type Configuration struct {
 
 // GetConfig comment
 func GetConfig() *Configuration {
-	file, nofErr := os.Open("../loader/conf.json")
-	defer file.Close()
 
-	if nofErr != nil {
-		log.Fatal("No conf file!")
-	}
+	// if _, err := os.Stat("../loader/local.json"); os.IsNotExist(err) {
+	// 	file, err := os.Open("../loader/local.json")
+	// } else if _, err := os.Stat("../loader/conf.json"); os.IsNotExist(err) {
+	file, _ := os.Open("../loader/conf.json")
+	// } else {
+	// 	file := nil
+	// 	log.Fatal("No conf file!")
+	// }
 
 	decoder := json.NewDecoder(file)
 	configuration := Configuration{}
