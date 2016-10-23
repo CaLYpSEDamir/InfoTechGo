@@ -1,0 +1,11 @@
+{
+    "dbs": {
+        "psql": {
+            "host": "",
+            "dbname": "",
+            "user": "",
+            "password": "",
+            "sslmode": "disable"
+        }
+    }
+}
