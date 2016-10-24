@@ -147,7 +147,8 @@ func (s *Saver) SaveResearch(
 	conn.Close()
 	close(researchChOut)
 
-	time.Sleep(time.Second)
+	// wait for conn closeSecond
+	time.Sleep(100 * time.Millisecond)
 }
 
 // SaveResearch1 c
@@ -179,7 +180,8 @@ func (s *Saver) SaveResearchFullInfo(researchCh chan []string, resCh chan bool) 
 
 	conn.Close()
 
-	time.Sleep(time.Second)
+	// wait for conn close
+	time.Sleep(100 * time.Millisecond)
 
 	resCh <- true
 

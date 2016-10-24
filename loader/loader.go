@@ -20,14 +20,12 @@ type Configuration struct {
 // GetConfig comment
 func GetConfig() *Configuration {
 
-	// if _, err := os.Stat("../loader/local.json"); os.IsNotExist(err) {
-	// 	file, err := os.Open("../loader/local.json")
-	// } else if _, err := os.Stat("../loader/conf.json"); os.IsNotExist(err) {
-	file, _ := os.Open("../loader/conf.json")
-	// } else {
-	// 	file := nil
-	// 	log.Fatal("No conf file!")
-	// }
+	file, err := os.Open("../loader/local.json")
+
+	if err != nil {
+		p(err)
+		file, _ = os.Open("../loader/conf.json")
+	}
 
 	decoder := json.NewDecoder(file)
 	configuration := Configuration{}
