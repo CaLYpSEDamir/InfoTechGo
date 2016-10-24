@@ -173,12 +173,7 @@ func (m *Miner) GetResearchFullInfo(researchChIn chan []string,
 			newT = strings.Replace(newT, "\t", "\\t", -1)
 
 			sh := SearchHelper{}
-			e := json.Unmarshal([]byte(newT), &sh)
-
-			if e != nil {
-				p(e)
-				p(rID, url)
-			}
+			json.Unmarshal([]byte(newT), &sh)
 
 			info := []string{
 				sh.Link_88, sh.Link_84, sh.Link_81, sh.Link_82,

@@ -60,43 +60,52 @@ func (l *Loader) Load() {
 	types := l.Miner.GetTypes()
 	l.Saver.SaveTypes(types)
 
-	subTypes := types[18:]
-	// [:7] OK
-	// [7:14] OK
-	//[14:18] OK
-	//[18:] OK
-
-	// p(subTypes)
-
-	endCh := make(chan bool)
-	defer close(endCh)
-
-	for _, info := range subTypes {
-		subTypeCh := make(chan []string)
-		researchCh1 := make(chan []string)
-
-		// hacks
-		researchCh2 := make(chan []string, 1000)
-		researchCh3 := make(chan []string, 2000)
-
-		go func(info []string) {
-			l.Miner.ExtractTypeData(info, subTypeCh, researchCh1)
-		}(info)
-
-		go func() {
-			l.Saver.SaveSubTypes(subTypeCh)
-			l.Saver.SaveResearch(researchCh1, researchCh2)
-		}()
-
-		go l.Miner.GetResearchFullInfo(researchCh2, researchCh3)
-
-		go l.Saver.SaveResearchFullInfo(researchCh3, endCh)
+	//hack
+	// postgres too many connection (setted max_conn=2000)
+	// http too many connection
+	rangLsit := [][]int{
+		[]int{0, 7},
+		[]int{7, 14},
+		// []int{0, 14},
+		[]int{14, 21},
+		[]int{21, len(types)},
+		// []int{14, len(types)},
 	}
 
-	for range subTypes {
-		p("endCh #1", <-endCh)
-	}
+	for i, rang := range rangLsit {
 
-	p(time.Since(t1))
-	p("END")
+		subTypes := types[rang[0]:rang[1]]
+
+		endCh := make(chan bool)
+		defer close(endCh)
+
+		for _, info := range subTypes {
+			subTypeCh := make(chan []string)
+			researchCh1 := make(chan []string)
+
+			// hacks
+			researchCh2 := make(chan []string, 1000)
+			researchCh3 := make(chan []string, 1000)
+
+			go func(info []string) {
+				l.Miner.ExtractTypeData(info, subTypeCh, researchCh1)
+			}(info)
+
+			go func() {
+				l.Saver.SaveSubTypes(subTypeCh)
+				l.Saver.SaveResearch(researchCh1, researchCh2)
+			}()
+
+			go l.Miner.GetResearchFullInfo(researchCh2, researchCh3)
+
+			go l.Saver.SaveResearchFullInfo(researchCh3, endCh)
+		}
+
+		for range subTypes {
+			p("endCh #", i, <-endCh)
+		}
+
+		p(time.Since(t1))
+		p("END", i)
+	}
 }

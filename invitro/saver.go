@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	// for multi insert
 	// "github.com/lib/pq"
@@ -88,11 +89,8 @@ func (s *Saver) SaveTypes(typesInfo [][]string) {
 // SaveSubTypes c
 func (s *Saver) SaveSubTypes(subTypeIn chan []string) {
 
-	// t1 := time.Now()
-
-	// conn := s.c
 	conn := s.getConn()
-	defer conn.Close()
+	// defer conn.Close()
 
 	var wg sync.WaitGroup
 
@@ -108,17 +106,15 @@ func (s *Saver) SaveSubTypes(subTypeIn chan []string) {
 	}
 
 	wg.Wait()
+	conn.Close()
 }
 
 // SaveResearch1 c
 func (s *Saver) SaveResearch(
 	researchChIn chan []string, researchChOut chan []string) {
 
-	// t1 := time.Now()
-
-	// conn := s.c
 	conn := s.getConn()
-	defer conn.Close()
+	// defer conn.Close()
 
 	var wg sync.WaitGroup
 
@@ -148,15 +144,17 @@ func (s *Saver) SaveResearch(
 	}
 
 	wg.Wait()
-
+	conn.Close()
 	close(researchChOut)
+
+	time.Sleep(time.Second)
 }
 
 // SaveResearch1 c
 func (s *Saver) SaveResearchFullInfo(researchCh chan []string, resCh chan bool) {
 
 	conn := s.getConn()
-	defer conn.Close()
+	// defer conn.Close()
 
 	var wg sync.WaitGroup
 
@@ -179,5 +177,10 @@ func (s *Saver) SaveResearchFullInfo(researchCh chan []string, resCh chan bool) 
 	}
 	wg.Wait()
 
+	conn.Close()
+
+	time.Sleep(time.Second)
+
 	resCh <- true
+
 }
