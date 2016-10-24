@@ -21,7 +21,7 @@ const host = "https://www.invitro.ru"
 // Miner for obtaining data
 type Miner struct{}
 
-// GetDecodedDoc c
+// GetDecodedDoc преобразует кодировку с win1251 в utf8
 func (m *Miner) GetDecodedDoc(url string) *goquery.Document {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -46,7 +46,7 @@ func (m *Miner) GetDecodedDoc(url string) *goquery.Document {
 	return doc
 }
 
-// extractLinks method
+// extractLinks достает инфу ссылок
 func (m *Miner) extractLinks(
 	aList *goquery.Selection) [][]string {
 
@@ -61,7 +61,7 @@ func (m *Miner) extractLinks(
 	return info
 }
 
-// GetTypes method
+// GetTypes достаем типы
 func (m *Miner) GetTypes() [][]string {
 
 	doc := m.GetDecodedDoc(host + "/analizes/for-doctors/")
@@ -71,7 +71,7 @@ func (m *Miner) GetTypes() [][]string {
 	return typesInfo
 }
 
-// GetSubTypes method
+// GetSubTypes достаем подтипы
 func (m *Miner) getSubTypes(doc *goquery.Document,
 	typeName string, subTypeCh chan []string) {
 
@@ -85,7 +85,7 @@ func (m *Miner) getSubTypes(doc *goquery.Document,
 	close(subTypeCh)
 }
 
-// GetResearches method
+// GetResearches достаем первичную инфу исследований
 func (m *Miner) getResearches(
 	doc *goquery.Document, mainType string, researchCh chan []string) {
 
@@ -122,7 +122,7 @@ func (m *Miner) getResearches(
 	close(researchCh)
 }
 
-// ExtractTypeData method
+// ExtractTypeData достаем подтипы и исследования
 func (m *Miner) ExtractTypeData(
 	info []string, subTypeCh chan []string, researchCh chan []string) {
 
@@ -135,7 +135,7 @@ func (m *Miner) ExtractTypeData(
 
 }
 
-// GetResearchFullInfo c
+// GetResearchFullInfo полная инфа исследований
 func (m *Miner) GetResearchFullInfo(researchChIn chan []string,
 	researchChOut chan []string) {
 

@@ -17,7 +17,7 @@ type Configuration struct {
 	Dbs map[string]map[string]string
 }
 
-// GetConfig comment
+// GetConfig установка конфигураций
 func GetConfig() *Configuration {
 
 	file, err := os.Open("../loader/local.json")
@@ -37,21 +37,20 @@ func GetConfig() *Configuration {
 	return &configuration
 }
 
-// Loader - main object processing extraction and saving data
+// Loader - processing extraction and saving data
 type Loader struct {
 	config *Configuration
 	Miner  invitro.Miner
-	// Preparer invitro.Preparer
-	Saver invitro.Saver
+	Saver  invitro.Saver
 }
 
-// Init c
+// Init инициализация Loader
 func (l *Loader) Init() {
 	l.config = GetConfig()
 	l.Saver.Init(l.config.Dbs["psql"])
 }
 
-// Load starts all process
+// Load процесс достачи и загрузки
 func (l *Loader) Load() {
 	t1 := time.Now()
 
@@ -59,7 +58,7 @@ func (l *Loader) Load() {
 	l.Saver.SaveTypes(types)
 
 	//hack
-	// postgres too many connection (setted max_conn=2000)
+	// postgres too many connection (needs increase max_connections)
 	// http too many connection
 	rangLsit := [][]int{
 		[]int{0, 7},
@@ -81,7 +80,7 @@ func (l *Loader) Load() {
 			subTypeCh := make(chan []string)
 			researchCh1 := make(chan []string)
 
-			// hacks
+			// hacks buffered channels
 			researchCh2 := make(chan []string, 1000)
 			researchCh3 := make(chan []string, 1000)
 

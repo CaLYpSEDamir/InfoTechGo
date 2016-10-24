@@ -18,6 +18,7 @@ type Saver struct {
 	connStr string
 }
 
+// checkConn проверяем подключение к БД
 func (s *Saver) checkConn() {
 	db, err := gorm.Open("postgres", s.connStr)
 	defer db.Close()
@@ -27,6 +28,7 @@ func (s *Saver) checkConn() {
 	}
 }
 
+// getConn возвращаем подключение к БД
 func (s *Saver) getConn() *gorm.DB {
 	db, err := gorm.Open("postgres", s.connStr)
 
@@ -36,7 +38,7 @@ func (s *Saver) getConn() *gorm.DB {
 	return db
 }
 
-// Init c
+// Init инициализация Saver, создание таблиц
 func (s *Saver) Init(dbInfo map[string]string) {
 
 	var connParts []string
@@ -64,7 +66,7 @@ func (s *Saver) Init(dbInfo map[string]string) {
 
 }
 
-// SaveTypes c
+// SaveTypes сохранение типов
 func (s *Saver) SaveTypes(typesInfo [][]string) {
 
 	conn := s.getConn()
@@ -86,7 +88,7 @@ func (s *Saver) SaveTypes(typesInfo [][]string) {
 	wg.Wait()
 }
 
-// SaveSubTypes c
+// SaveSubTypes сохранение подтипов
 func (s *Saver) SaveSubTypes(subTypeIn chan []string) {
 
 	conn := s.getConn()
@@ -109,7 +111,7 @@ func (s *Saver) SaveSubTypes(subTypeIn chan []string) {
 	conn.Close()
 }
 
-// SaveResearch1 c
+// SaveResearch1 сохранение исследований
 func (s *Saver) SaveResearch(
 	researchChIn chan []string, researchChOut chan []string) {
 
@@ -151,7 +153,7 @@ func (s *Saver) SaveResearch(
 	time.Sleep(100 * time.Millisecond)
 }
 
-// SaveResearch1 c
+// SaveResearchFullInfo сохранение полной инфы исследований
 func (s *Saver) SaveResearchFullInfo(researchCh chan []string, resCh chan bool) {
 
 	conn := s.getConn()

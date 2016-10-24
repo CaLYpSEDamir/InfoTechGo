@@ -1,5 +1,6 @@
 package invitro
 
+// SearchHelper структура для полных описаний исследований
 type SearchHelper struct {
 	Link_88 string
 	Link_84 string
@@ -7,14 +8,14 @@ type SearchHelper struct {
 	Link_82 string
 }
 
-// ResearchType c
+// ResearchType модель типов исследований
 type ResearchType struct {
 	ID       uint `gorm:"primary_key"`
 	ParentID uint
 	Name     string `gorm:"size:255"`
 }
 
-// Research c
+// Research модель исследований
 type Research struct {
 	ID          uint   `gorm:"primary_key"`
 	Name        string `gorm:"size:500"`
