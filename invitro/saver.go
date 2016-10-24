@@ -112,7 +112,7 @@ func (s *Saver) SaveSubTypes(subTypeIn chan []string) {
 
 // SaveResearch1 c
 func (s *Saver) SaveResearch(
-	researchCh chan []string, resAllInfoCh chan []string) {
+	researchChIn chan []string, researchChOut chan []string) {
 
 	// t1 := time.Now()
 
@@ -122,12 +122,13 @@ func (s *Saver) SaveResearch(
 
 	var wg sync.WaitGroup
 
-	for subT := range researchCh {
+	for subT := range researchChIn {
 		wg.Add(1)
 		go func(subT []string) {
 			defer wg.Done()
 
 			subTypeName, researchName, resHref := subT[0], subT[2], subT[3]
+
 			typ := ResearchType{}
 			conn.Where("name = ?", subTypeName).First(&typ)
 
@@ -141,14 +142,14 @@ func (s *Saver) SaveResearch(
 
 			res := Research{Name: researchName, TypeID: typ.ID}
 			conn.Create(&res)
-			resAllInfoCh <- []string{fmt.Sprint(res.ID), resHref}
+			researchChOut <- []string{fmt.Sprint(res.ID), resHref}
 
 		}(subT)
 	}
 
 	wg.Wait()
 
-	close(resAllInfoCh)
+	close(researchChOut)
 }
 
 // SaveResearch1 c

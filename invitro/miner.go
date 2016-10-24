@@ -103,8 +103,13 @@ func (m *Miner) getResearches(
 			continue
 		} else {
 			a := trDoc.Find("td.name>a")
+
 			text := a.Text()
-			href, _ := a.Attr("href")
+			href, exist := a.Attr("href")
+
+			if !exist {
+				continue
+			}
 
 			if typ == "" {
 				researchCh <- []string{mainType, "nil", text, href}
@@ -141,9 +146,8 @@ func (m *Miner) GetResearchFullInfo(researchChIn chan []string,
 		go func(r []string) {
 			defer wg.Done()
 
-			// p(r)
-
 			rID, url := r[0], r[1]
+			// p(rID, url)
 			// url := r[1]
 
 			doc := m.GetDecodedDoc(host + url)
@@ -151,7 +155,14 @@ func (m *Miner) GetResearchFullInfo(researchChIn chan []string,
 			script := doc.Find("script[language=\"JavaScript\"]:contains(\"arText\")")
 			text := script.Text()
 
-			split := strings.Split(text, "var arTexts=")[1]
+			splits := strings.Split(text, "var arTexts=")
+
+			if len(splits) != 2 {
+				// p("Not 2", r)
+				return
+			}
+			split := splits[1]
+
 			spl := strings.Split(split, ";")
 			spl = spl[:len(spl)-1]
 			newT := strings.Join(spl, ";")
@@ -166,7 +177,7 @@ func (m *Miner) GetResearchFullInfo(researchChIn chan []string,
 
 			if e != nil {
 				p(e)
-				return
+				p(rID, url)
 			}
 
 			info := []string{

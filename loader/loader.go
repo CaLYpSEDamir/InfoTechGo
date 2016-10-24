@@ -60,11 +60,13 @@ func (l *Loader) Load() {
 	types := l.Miner.GetTypes()
 	l.Saver.SaveTypes(types)
 
-	subTypes := types[13:14]
-	//[13:14] error
-	//[14:] zhopa toje
+	subTypes := types[18:]
+	// [:7] OK
+	// [7:14] OK
+	//[14:18] OK
+	//[18:] OK
 
-	p(subTypes)
+	// p(subTypes)
 
 	endCh := make(chan bool)
 	defer close(endCh)
