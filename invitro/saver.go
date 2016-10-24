@@ -147,7 +147,7 @@ func (s *Saver) SaveResearch(
 	conn.Close()
 	close(researchChOut)
 
-	// wait for conn closeSecond
+	// wait for conn close
 	time.Sleep(100 * time.Millisecond)
 }
 

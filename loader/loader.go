@@ -102,6 +102,7 @@ func (l *Loader) Load() {
 		for range subTypes {
 			p("endCh #", i, <-endCh)
 		}
+		close(endCh)
 
 		p(time.Since(t1))
 		p("END", i)
